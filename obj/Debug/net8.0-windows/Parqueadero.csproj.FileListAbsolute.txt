@@ -1,0 +1,4 @@
+C:\Users\Usuario\Downloads\Parqueadero_CSharp\Parqueadero\obj\Debug\net8.0-windows\Parqueadero.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Usuario\Downloads\Parqueadero_CSharp\Parqueadero\obj\Debug\net8.0-windows\Parqueadero.AssemblyInfoInputs.cache
+C:\Users\Usuario\Downloads\Parqueadero_CSharp\Parqueadero\obj\Debug\net8.0-windows\Parqueadero.AssemblyInfo.cs
+C:\Users\Usuario\Downloads\Parqueadero_CSharp\Parqueadero\obj\Debug\net8.0-windows\Parqueadero.csproj.CoreCompileInputs.cache

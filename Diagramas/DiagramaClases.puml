@@ -1,0 +1,142 @@
+@startuml DiagramaClases_Parqueadero
+
+title Sistema de Parqueadero - Diagrama de Clases UML
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    BorderColor #333
+    HeaderBackgroundColor #1E1E50
+    HeaderFontColor White
+    FontSize 11
+}
+
+' ══════════════ DOMINIO ══════════════
+
+abstract class Vehiculo {
+    - _placa : string
+    - _propietario : string
+    - _horaEntrada : DateTime
+    + Placa : string <<get/set validado>>
+    + Propietario : string <<get/set validado>>
+    + HoraEntrada : DateTime
+    + {abstract} TipoVehiculo : string
+    + {abstract} TarifaPorHora : decimal
+    + {virtual} CalcularCosto(horaSalida: DateTime) : decimal
+    + ToString() : string
+}
+
+class Carro {
+    - TARIFA_HORA : decimal = 3500 <<const>>
+    + TipoVehiculo : string = "Carro"
+    + TarifaPorHora : decimal = 3500
+    + CalcularCosto(horaSalida: DateTime) : decimal <<override>>
+    ' Recargo 20% si estadía > 8h
+}
+
+class Moto {
+    - TARIFA_HORA : decimal = 1500 <<const>>
+    + TipoVehiculo : string = "Moto"
+    + TarifaPorHora : decimal = 1500
+    ' Hereda CalcularCosto base
+}
+
+class Camion {
+    - TARIFA_HORA : decimal = 6000 <<const>>
+    - COSTO_INGRESO : decimal = 2000 <<const>>
+    + TipoVehiculo : string = "Camión"
+    + TarifaPorHora : decimal = 6000
+    + CalcularCosto(horaSalida: DateTime) : decimal <<override>>
+    ' Cobro = horas*tarifa + 2000 fijo
+}
+
+class Tiquete {
+    - _consecutivo : int {static}
+    + Numero : int <<get>>
+    + Vehiculo : Vehiculo <<get>>
+    + HoraSalida : DateTime <<get>>
+    + TotalCobrado : decimal <<get>>
+    + EstaActivo : bool <<get>>
+    + Cerrar() : void
+    + Cerrar(horaSalidaManual: DateTime) : void
+    + TiempoEstadia() : TimeSpan
+    + GenerarRecibo() : string
+    + ToString() : string
+}
+
+' ══════════════ REPOSITORIO ══════════════
+
+class RepositorioTiquetes {
+    - _tiquetes : List<Tiquete>
+    - _capacidadMaxima : int
+    + VehiculosActivos : int
+    + EspaciosDisponibles : int
+    + CapacidadMaxima : int
+    + RegistrarEntrada(vehiculo: Vehiculo) : Tiquete
+    + BuscarVehiculoActivo(placa: string) : Tiquete?
+    + BuscarPorNumero(numero: int) : Tiquete?
+    + ListarActivos() : List<Tiquete>
+    + ListarHistorial() : List<Tiquete>
+    + ListarTodos() : List<Tiquete>
+    + RegistrarSalida(placa: string) : Tiquete
+    + EliminarDelHistorial(numeroTiquete: int) : bool
+    + TotalRecaudado() : decimal
+    + RecaudoPorTipo() : Dictionary<string, decimal>
+    + ConteoActivosPorTipo() : Dictionary<string, int>
+}
+
+' ══════════════ SERVICIO ══════════════
+
+class ParqueaderoServicio {
+    - _repositorio : RepositorioTiquetes
+    + VehiculosActivos : int
+    + EspaciosDisponibles : int
+    + CapacidadMaxima : int
+    + RegistrarEntrada(tipo, placa, propietario) : Tiquete
+    + RegistrarSalida(placa: string) : Tiquete
+    + BuscarActivo(placa: string) : Tiquete?
+    + ListarActivos() : List<Tiquete>
+    + ListarHistorial() : List<Tiquete>
+    + EliminarDelHistorial(numero: int) : bool
+    + TotalRecaudado() : decimal
+    + ObtenerTarifas() : Dictionary<string, decimal> {static}
+}
+
+' ══════════════ UI ══════════════
+
+class FormPrincipal {
+    - _servicio : ParqueaderoServicio
+    + BtnEntrada_Click() : void
+    + BtnBuscarSalida_Click() : void
+    + BtnConfirmarSalida_Click() : void
+    + RefrescarActivos() : void
+    + RefrescarHistorial() : void
+    + RefrescarEstadisticas() : void
+}
+
+' ══════════════ RELACIONES ══════════════
+
+Vehiculo <|-- Carro        : hereda
+Vehiculo <|-- Moto         : hereda
+Vehiculo <|-- Camion       : hereda
+
+Tiquete *-- Vehiculo       : contiene (composición)
+RepositorioTiquetes o-- Tiquete : gestiona (agregación) / List<Tiquete>
+ParqueaderoServicio --> RepositorioTiquetes : usa
+FormPrincipal --> ParqueaderoServicio : usa
+
+note right of Vehiculo
+  Clase ABSTRACTA
+  TipoVehiculo y TarifaPorHora:
+  métodos abstractos
+  CalcularCosto: virtual/override
+  → POLIMORFISMO
+end note
+
+note bottom of Tiquete
+  Llama vehiculo.CalcularCosto()
+  → polimorfismo en tiempo de ejecución
+  (Carro, Moto o Camion)
+end note
+
+@enduml

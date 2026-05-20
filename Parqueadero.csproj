@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Parqueadero</AssemblyName>
+    <RootNamespace>Parqueadero</RootNamespace>
+    <ApplicationIcon>parking.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <Authors>Equipo de Desarrollo</Authors>
+    <Description>Sistema de gestión de parqueadero con entradas, salidas y tarifas por tipo de vehículo.</Description>
+  </PropertyGroup>
+
+</Project>
