@@ -59,72 +59,72 @@ namespace Parqueadero.Formularios
         }
 
         private void InitializeComponent()
-        {
-            this.Text = "🅿️ Sistema de Parqueadero";
-            this.Size = new Size(820, 620);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.MinimumSize = new Size(820, 600);
-            this.BackColor = Color.FromArgb(240, 242, 245);
-            this.Font = new Font("Segoe UI", 9f);
+{
+    this.Text = "🅿️ Sistema de Parqueadero";
+    this.Size = new Size(820, 620);
+    this.StartPosition = FormStartPosition.CenterScreen;
+    this.MinimumSize = new Size(820, 600);
+    this.BackColor = Color.FromArgb(240, 242, 245);
+    this.Font = new Font("Segoe UI", 9f);
 
-            // ── 1. Panel superior de estado ─────────────────────────
-            // Se crea e inicializa PRIMERO para asegurar su espacio en el tope
-            pnlEstado = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 55,
-                BackColor = Color.FromArgb(30, 30, 50),
-                Padding = new Padding(10, 5, 10, 5)
-            };
+    // ── 1. Panel superior de estado ─────────────────────────
+    pnlEstado = new Panel
+    {
+        Dock = DockStyle.Top,
+        Height = 55,
+        BackColor = Color.FromArgb(30, 30, 50),
+        Padding = new Padding(10, 5, 10, 5)
+    };
 
-            var lblTitulo = new Label
-            {
-                Text = "🅿️  PARQUEADERO SISTEMA",
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 12f, FontStyle.Bold),
-                AutoSize = true,
-                Location = new Point(10, 14)
-            };
+    var lblTitulo = new Label
+    {
+        Text = "🅿️  PARQUEADERO SISTEMA",
+        ForeColor = Color.White,
+        Font = new Font("Segoe UI", 12f, FontStyle.Bold),
+        AutoSize = true,
+        Location = new Point(10, 14)
+    };
 
-            lblEstadoCapacidad = CrearLabelEstado("Capacidad: 20", 240);
-            lblEstadoActivos   = CrearLabelEstado("Activos: 0", 380);
-            lblEstadoDisponibles = CrearLabelEstado("Libres: 20", 500);
+    lblEstadoCapacidad = CrearLabelEstado("Capacidad: 20", 240);
+    lblEstadoActivos   = CrearLabelEstado("Activos: 0", 380);
+    lblEstadoDisponibles = CrearLabelEstado("Libres: 20", 500);
 
-            pnlEstado.Controls.AddRange(new Control[] { lblTitulo, lblEstadoCapacidad, lblEstadoActivos, lblEstadoDisponibles });
-            
-            // IMPORTANTE: Agregar el panel de estado antes del TabControl
-            this.Controls.Add(pnlEstado);
+    pnlEstado.Controls.AddRange(new Control[] { lblTitulo, lblEstadoCapacidad, lblEstadoActivos, lblEstadoDisponibles });
+    
+    // ── 2. TabControl ───────────────────────────────────────
+    tabControl = new TabControl
+    {
+        Dock = DockStyle.Fill, 
+        Font = new Font("Segoe UI", 9.5f),
+        Padding = new Point(12, 6)
+    };
 
-            // ── 2. TabControl ───────────────────────────────────────
-            tabControl = new TabControl
-            {
-                Dock = DockStyle.Fill, // Ahora llenará el espacio restante ABAJO del panel
-                Font = new Font("Segoe UI", 9.5f),
-                Padding = new Point(12, 6)
-            };
+    tabEntrada      = new TabPage("  ⬇ Entrada  ");
+    tabSalida       = new TabPage("  ⬆ Salida  ");
+    tabActivos      = new TabPage("  🚗 Activos  ");
+    tabHistorial    = new TabPage("  📋 Historial  ");
+    tabEstadisticas = new TabPage("  📊 Estadísticas  ");
 
-            tabEntrada      = new TabPage("  ⬇ Entrada  ");
-            tabSalida       = new TabPage("  ⬆ Salida  ");
-            tabActivos      = new TabPage("  🚗 Activos  ");
-            tabHistorial    = new TabPage("  📋 Historial  ");
-            tabEstadisticas = new TabPage("  📊 Estadísticas  ");
+    tabControl.TabPages.AddRange(new[] { tabEntrada, tabSalida, tabActivos, tabHistorial, tabEstadisticas });
+    
+    // ── 3. Agregar controles al Formulario en orden inverso de capas ──
+    this.Controls.Add(tabControl);
+    this.Controls.Add(pnlEstado);
 
-            tabControl.TabPages.AddRange(new[] { tabEntrada, tabSalida, tabActivos, tabHistorial, tabEstadisticas });
-            
-            // Agregamos el TabControl al formulario
-            this.Controls.Add(tabControl);
+    // ── 4. SOLUCIÓN DEFINITIVA: Forzar el orden en el Eje Z ──────────
+    pnlEstado.BringToFront();  // Fuerza al panel de título a estar ARRIBA de todo
+    tabControl.SendToBack();   // Fuerza al contenedor de pestañas a estar ABAJO del panel
 
-            // Inicializar cada pestaña
-            InicializarTabEntrada();
-            InicializarTabSalida();
-            InicializarTabActivos();
-            InicializarTabHistorial();
-            InicializarTabEstadisticas();
+    // Inicializar cada pestaña
+    InicializarTabEntrada();
+    InicializarTabSalida();
+    InicializarTabActivos();
+    InicializarTabHistorial();
+    InicializarTabEstadisticas();
 
-            // Eventos de cambio de pestaña
-            tabControl.SelectedIndexChanged += (s, e) => RefrescarPestañaActual();
-        }
-
+    // Eventos de cambio de pestaña
+    tabControl.SelectedIndexChanged += (s, e) => RefrescarPestañaActual();
+}
         // ─── Helpers de UI ────────────────────────────────────────
         private Label CrearLabelEstado(string texto, int x) => new Label
         {
