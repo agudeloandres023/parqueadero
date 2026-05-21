@@ -1,0 +1,145 @@
+# ================================
+#  .gitignore — Parqueadero C#
+# ================================
+
+# ──────────────────────────────
+# Archivos de compilación
+# ──────────────────────────────
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+out/
+build/
+publish/
+
+# ──────────────────────────────
+# Visual Studio / VS Code
+# ──────────────────────────────
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.pidb
+*.ncb
+*.opendb
+*.VC.db
+*.VC.opendb
+
+# ──────────────────────────────
+# Solución y proyecto
+# ──────────────────────────────
+*.rsuser
+*.sln.iml
+
+# ──────────────────────────────
+# NuGet
+# ──────────────────────────────
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+nuget.config
+
+# ──────────────────────────────
+# Rider (JetBrains)
+# ──────────────────────────────
+.idea/
+*.sln.iml
+
+# ──────────────────────────────
+# .NET / Runtime
+# ──────────────────────────────
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.meta
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.manifest
+*.spec
+
+# ──────────────────────────────
+# Publish / Deploy
+# ──────────────────────────────
+[Pp]ublish/
+PublishProfiles/
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+
+# ──────────────────────────────
+# Base de datos (si usas SQLite, SQL Server LocalDB, etc.)
+# ──────────────────────────────
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ──────────────────────────────
+# Reportes y archivos generados
+# ──────────────────────────────
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+*.cobertura.xml
+
+# ──────────────────────────────
+# Variables de entorno y secretos
+# ──────────────────────────────
+.env
+.env.*
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.pfx
+*.p12
+*.key
+
+# ──────────────────────────────
+# Archivos del sistema operativo
+# ──────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ──────────────────────────────
+# Docker (si aplica)
+# ──────────────────────────────
+.dockerignore
+docker-compose.override.yml
+
+# ──────────────────────────────
+# Archivos de log propios del parqueadero
+# ──────────────────────────────
+logs/
+*.log
+registros/
+reportes/
