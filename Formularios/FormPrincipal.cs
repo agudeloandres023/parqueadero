@@ -12,7 +12,7 @@ namespace Parqueadero.Formularios
     {
         private readonly ParqueaderoServicio _servicio;
 
-        // Controles de la UI declarados aquí para claridad
+        // Controles de la UI
         private TabControl tabControl;
         private TabPage tabEntrada, tabSalida, tabActivos, tabHistorial, tabEstadisticas;
 
@@ -20,6 +20,7 @@ namespace Parqueadero.Formularios
         private ComboBox cmbTipo;
         private TextBox txtPlaca, txtPropietario;
         private Button btnEntrada;
+        private Button btnIrASalida; 
         private Label lblEntradaInfo;
 
         // Tab Salida
@@ -46,7 +47,7 @@ namespace Parqueadero.Formularios
         private Panel pnlEstado;
         private Label lblEstadoCapacidad, lblEstadoDisponibles, lblEstadoActivos;
 
-        private Tiquete? _tiqueteEnSalida; // tiquete encontrado para confirmar salida
+        private Tiquete? _tiqueteEnSalida; 
 
         public FormPrincipal()
         {
@@ -66,7 +67,8 @@ namespace Parqueadero.Formularios
             this.BackColor = Color.FromArgb(240, 242, 245);
             this.Font = new Font("Segoe UI", 9f);
 
-            // ── Panel superior de estado ─────────────────────────
+            // ── 1. Panel superior de estado ─────────────────────────
+            // Se crea e inicializa PRIMERO para asegurar su espacio en el tope
             pnlEstado = new Panel
             {
                 Dock = DockStyle.Top,
@@ -89,12 +91,14 @@ namespace Parqueadero.Formularios
             lblEstadoDisponibles = CrearLabelEstado("Libres: 20", 500);
 
             pnlEstado.Controls.AddRange(new Control[] { lblTitulo, lblEstadoCapacidad, lblEstadoActivos, lblEstadoDisponibles });
+            
+            // IMPORTANTE: Agregar el panel de estado antes del TabControl
             this.Controls.Add(pnlEstado);
 
-            // ── TabControl ───────────────────────────────────────
+            // ── 2. TabControl ───────────────────────────────────────
             tabControl = new TabControl
             {
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Fill, // Ahora llenará el espacio restante ABAJO del panel
                 Font = new Font("Segoe UI", 9.5f),
                 Padding = new Point(12, 6)
             };
@@ -106,6 +110,8 @@ namespace Parqueadero.Formularios
             tabEstadisticas = new TabPage("  📊 Estadísticas  ");
 
             tabControl.TabPages.AddRange(new[] { tabEntrada, tabSalida, tabActivos, tabHistorial, tabEstadisticas });
+            
+            // Agregamos el TabControl al formulario
             this.Controls.Add(tabControl);
 
             // Inicializar cada pestaña
@@ -185,7 +191,6 @@ namespace Parqueadero.Formularios
                 Location = new Point(0, 0)
             };
 
-            // Tipo de vehículo
             var lblTipo = CrearLabel("Tipo de Vehículo:", 0, 45);
             cmbTipo = new ComboBox
             {
@@ -198,7 +203,6 @@ namespace Parqueadero.Formularios
             cmbTipo.Items.AddRange(new object[] { "Carro", "Moto", "Camión" });
             cmbTipo.SelectedIndex = 0;
 
-            // Panel de tarifas informativo
             var pnlTarifas = new Panel
             {
                 Location = new Point(320, 45),
@@ -209,7 +213,7 @@ namespace Parqueadero.Formularios
             var lblTarifasTitulo = new Label { Text = "Tarifas por hora:", Font = new Font("Segoe UI", 9f, FontStyle.Bold), Location = new Point(8, 8), AutoSize = true, ForeColor = Color.FromArgb(30, 30, 100) };
             var lblTarifas = new Label
             {
-                Text = "🚗 Carro:   $3.500  (+20% si >8h)\n🏍 Moto:    $1.500\n🚛 Camión:  $6.000  (+$2.000 fijo)",
+                Text = "🚗 Carro:   $3.500  (+20% si >8h)\nItem Moto:    $1.500\n🚛 Camión:  $6.000  (+$2.000 fijo)",
                 Location = new Point(8, 28),
                 AutoSize = true,
                 Font = new Font("Consolas", 8.5f),
@@ -217,23 +221,19 @@ namespace Parqueadero.Formularios
             };
             pnlTarifas.Controls.AddRange(new Control[] { lblTarifasTitulo, lblTarifas });
 
-            // Placa
             var lblPlaca = CrearLabel("Placa:", 0, 115);
             txtPlaca = CrearTextBox(0, 138);
             txtPlaca.CharacterCasing = CharacterCasing.Upper;
             txtPlaca.MaxLength = 8;
             var lblPlacaHint = new Label { Text = "Ej: ABC123 o ABC12D", Location = new Point(0, 168), AutoSize = true, ForeColor = Color.Gray, Font = new Font("Segoe UI", 8f) };
 
-            // Propietario
             var lblProp = CrearLabel("Nombre del Propietario:", 0, 190);
             txtPropietario = CrearTextBox(0, 213);
             txtPropietario.MaxLength = 60;
 
-            // Botón
             btnEntrada = CrearBoton("✅  Registrar Entrada", 0, 265, Color.FromArgb(34, 139, 34));
             btnEntrada.Click += BtnEntrada_Click;
 
-            // Mensaje
             lblEntradaInfo = new Label
             {
                 Location = new Point(0, 315),
@@ -274,7 +274,6 @@ namespace Parqueadero.Formularios
             btnBuscarSalida = CrearBoton("🔍  Buscar Vehículo", 0, 110, Color.FromArgb(30, 100, 170));
             btnBuscarSalida.Click += BtnBuscarSalida_Click;
 
-            // Panel de info del vehículo encontrado
             pnlInfoSalida = new Panel
             {
                 Location = new Point(0, 165),
@@ -442,7 +441,6 @@ namespace Parqueadero.Formularios
                 lblEntradaInfo.ForeColor = Color.DarkGreen;
                 lblEntradaInfo.Text = $"✅ Entrada registrada. Tiquete #{tiquete.Numero:D4}  |  {tipo}: {placa}";
 
-                // Limpiar formulario
                 txtPlaca.Text = "";
                 txtPropietario.Text = "";
                 cmbTipo.SelectedIndex = 0;
@@ -479,7 +477,6 @@ namespace Parqueadero.Formularios
 
                 _tiqueteEnSalida = tiquete;
 
-                // Mostrar info del vehículo en el panel
                 pnlInfoSalida.Controls.Clear();
                 pnlInfoSalida.Visible = true;
 
@@ -514,7 +511,6 @@ namespace Parqueadero.Formularios
             {
                 var tiquete = _servicio.RegistrarSalida(_tiqueteEnSalida.Vehiculo.Placa);
 
-                // Mostrar tiquete
                 rtbTiquete.Text = tiquete.GenerarRecibo();
                 rtbTiquete.Visible = true;
 
@@ -607,7 +603,7 @@ namespace Parqueadero.Formularios
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("╔══════════════════════════════════════════════╗");
-            sb.AppendLine("║         ESTADÍSTICAS DEL PARQUEADERO         ║");
+            sb.AppendLine("║          ESTADÍSTICAS DEL PARQUEADERO        ║");
             sb.AppendLine($"║         {DateTime.Now:dd/MM/yyyy HH:mm:ss}                 ║");
             sb.AppendLine("╠══════════════════════════════════════════════╣");
             sb.AppendLine($"║  Capacidad total:    {_servicio.CapacidadMaxima,-26}║");
